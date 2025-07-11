@@ -17,22 +17,21 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { SubscriptionService } from './subscription.service';
 
-import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
-import { AgentService } from '@/modules/agent/agent.service';
-import { CreatorService } from '@/modules/creator/creator.service';
+import { AgentService } from '@/agent/agent.service';
+import { CreatorService } from '@/creator/creator.service';
 import { SubscriptionPlanType } from '@/common/constants';
 
 import { Public } from '@/common/decorators';
 import { PrivyService } from '@/modules/privy/privy.service';
 
 import { SolanaService } from '@/services/solana.service';
-import { CreatorDocument } from '@/modules/creator/entities/creator.schema';
-import { TokenService } from '@/modules/token/token.service';
-import { AppConfigService } from '@/modules/app-config/app-config.service';
-import { TokenDocument } from '@/modules/token/entities/token.schema';
+import { CreatorDocument } from '@/creator/entities/creator.schema';
+import { TokenService } from '@/token/token.service';
+import { AppConfigService } from '@/app-config/app-config.service';
+import { TokenDocument } from '@/token/entities/token.schema';
+import { CreateSubscriptionDto } from '@/subscription/dto/create-subscription.dto';
+import { SubscriptionService } from '@/subscription/subscription.service';
 
 @Controller('subscriptions')
 @ApiTags('Subscription')
@@ -90,8 +89,13 @@ export class SubscriptionController {
 
     // create token if monthly plan, check if token exists
     if (dto.plan === SubscriptionPlanType.MONTHLY && dto.contractAddress) {
-      token = await this.tokenService.create(dto.contractAddress);
-      this.logger.log(`Token created: ${token?._id} - ${token?.address}`);
+      // fetch token metadata
+      const meta = await this.solanaService.getTokenMetadata(dto.contractAddress);
+
+      if (meta) {
+        token = await this.tokenService.createOrUpdateTokenFromHelius(dto.contractAddress, meta?.result);
+        this.logger.log(`Token created: ${token?._id} - ${token?.address}`);
+      }
     }
 
     // by agent, get related creator(s)

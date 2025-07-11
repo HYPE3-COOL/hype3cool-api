@@ -12,6 +12,7 @@ import {
   SubscriptionPlanType,
 } from 'src/common/constants';
 import { EntryDocument } from 'src/creator/entities/entry.schema';
+import { TokenDocument } from '@/token/entities/token.schema';
 
 @Injectable()
 export class SubscriptionService {
@@ -35,6 +36,7 @@ export class SubscriptionService {
     createSubscriptionDto: CreateSubscriptionDto,
     agent: AgentDocument,
     creators: CreatorDocument[],
+    token?: TokenDocument,
   ): Promise<SubscriptionDocument> {
     const session = await this.connection.startSession();
     session.startTransaction({ readPreference: 'primary' });

@@ -41,7 +41,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly creatorService: CreatorService,
-  ) {}
+  ) { }
 
   @Public()
   @Get('/username/:username')
@@ -110,15 +110,7 @@ export class UserController {
       });
     }
 
-    // if (search) {
-    //   query = {
-    //     $or: [
-    //       { username: { $regex: search.toLocaleLowerCase(), $options: 'i' } },
-    //       { displayName: { $regex: search, $options: 'i' } },
-    //       // { description: { "$regex": search, "$options": "i" } }
-    //     ],
-    //   };
-    // }
+
 
     const docs = await this.userService.findAll(
       query,
@@ -141,59 +133,6 @@ export class UserController {
     });
   }
 
-  // @Public()
-  // @Get('/getProfile/:userIdOrUsername')
-  // @ApiOperation({ summary: 'Get user profile by id or username [public]' })
-  // async findOneProfile(
-  //   @Param('userIdOrUsername') userIdOrUsername: string,
-  //   @Res() res,
-  // ) {
-  //   let user;
-  //   let fullUser;
-
-  //   if (this.helperService.isMongoId(userIdOrUsername)) {
-  //     user = await this.userService.findOneById(userIdOrUsername);
-  //     fullUser = await this.userService.findOneWithDetails(userIdOrUsername);
-  //   } else {
-  //     user = await this.userService.findOne({
-  //       username: userIdOrUsername,
-  //     });
-
-  //     fullUser = await this.userService.findOneWithDetails({
-  //       username: userIdOrUsername,
-  //     });
-  //   }
-
-  //   // get coin created by user
-  //   const coins = await this.coinService.findAll(
-  //     { creator: user._id },
-  //     { createdAt: -1 },
-  //   );
-
-  //   if (!user) {
-  //     throw new NotFoundException('User is not found!');
-  //   }
-
-  //   // want to get the details of favouite tokens how?
-  //   // const favoriteTokens = await this.tokenService.findManyByIds(user.favoriteTokens);
-
-  //   res.status(HttpStatus.OK).json({
-  //     data: {
-  //       _id: user._id,
-  //       uid: user.uid,
-  //       username: user.username,
-  //       displayName: user.displayName,
-  //       image: user.image,
-  //       walletAddresses: user.walletAddresses,
-  //       twitter: user.twitter,
-  //       favoriteTokens: user.favoriteTokens,
-  //       favouriteTokenDetails: fullUser.favoriteTokens,
-  //       oauthProvider: user.oauthProvider,
-  //       createdCoins: coins,
-  //     },
-  //     status: 'success',
-  //   });
-  // }
 
   /**
    * Update user's profile
@@ -309,118 +248,4 @@ export class UserController {
       status: 'success',
     });
   }
-
-  // // @Delete(':id')
-  // // remove(@Param('id') id: string) {
-  // //   return this.userService.remove(id);
-  // // }
-
-  // @Post('/:id/role/:roleId')
-  // @ApiBearerAuth()
-  // @ApiOperation({ summary: 'Attach role to user [only super user]' })
-  // async attachRole(
-  //   @Param('id') id: string,
-  //   @Param('roleId') roleId: string,
-  //   @Req() req: any,
-  //   @Res() res: any,
-  // ) {
-  //   // check if user is super admin
-  //   if (!req.user?.isBusiness) {
-  //     throw new UnauthorizedException();
-  //   }
-
-  //   const isUpdated = await this.userService.attachRole(id, roleId);
-  //   if (isUpdated) {
-  //     const doc = await this.userService.findOneById(id);
-  //     res.status(HttpStatus.ACCEPTED).json({
-  //       data: doc,
-  //       status: 'success',
-  //     });
-  //   } else {
-  //     res.status(HttpStatus.BAD_REQUEST).json({
-  //       isUpdated: false,
-  //     });
-  //   }
-  // }
-
-  // @Delete('/:id/role/:roleId')
-  // @ApiBearerAuth()
-  // @ApiOperation({ summary: 'Detach role to user [only super user]' })
-  // async detachRole(
-  //   @Param('id') id: string,
-  //   @Param('roleId') roleId: string,
-  //   @Req() req: any,
-  //   @Res() res: any,
-  // ) {
-  //   // check if user is super admin
-  //   if (!req.user?.isBusiness) {
-  //     throw new UnauthorizedException();
-  //   }
-
-  //   const isUpdated = await this.userService.detachRole(id, roleId);
-  //   if (isUpdated) {
-  //     const doc = await this.userService.findOneById(id);
-  //     res.status(HttpStatus.ACCEPTED).json({
-  //       data: doc,
-  //       status: 'success',
-  //     });
-  //   } else {
-  //     res.status(HttpStatus.BAD_REQUEST).json({
-  //       isUpdated: false,
-  //     });
-  //   }
-  // }
-
-  // @Post('/agora_rtc_token')
-  // @ApiBearerAuth()
-  // @ApiOperation({ summary: 'Get Agora RTC token' })
-  // async getAgoraRtcToken(
-  //   @Body() getAgoraTokenDto: GetAgoraTokenDto,
-  //   @Req() req,
-  //   @Res() res,
-  // ) {
-  //   if (req.user) {
-  //     const user = await this.userService.findOneById(req.user?.id);
-
-  //     if (!user) {
-  //       throw new NotFoundException(`No user is found`);
-  //     }
-
-  //     const rtcToken = await this.agoraService.getAgoraRtcToken(
-  //       getAgoraTokenDto.channelName,
-  //       user.username,
-  //     );
-
-  //     res.status(HttpStatus.OK).json({
-  //       data: {
-  //         rtcToken,
-  //         username: user.username,
-  //       },
-  //       status: 'success',
-  //     });
-  //   }
-  // }
-
-  // @Post('/agora_rtm_token')
-  // @ApiBearerAuth()
-  // @ApiOperation({ summary: 'Get Agora RTM token' })
-  // async getAgoraRtmToken(@Req() req, @Res() res) {
-  //   if (req.user) {
-  //     const user = await this.userService.findOneById(req.user?.id);
-
-  //     if (!user) {
-  //       throw new NotFoundException(`No user is found`);
-  //     }
-
-  //     const rtmToken = await this.agoraService.getAgoraRtmToken(user.uid);
-
-  //     res.status(HttpStatus.OK).json({
-  //       data: {
-  //         rtmToken,
-  //         uid: user.uid,
-  //       },
-  //       status: 'success',
-  //     });
-  //   }
-  // }
 }

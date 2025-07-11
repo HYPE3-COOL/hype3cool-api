@@ -4,7 +4,7 @@ import { UserController } from './user.controller';
 
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from 'src/user/entities/user.schema';
-import { AgoraService } from 'src/services/agora.service';
+
 import { ConfigSchema } from 'src/common/schemas/config.schema';
 import { UserActionLogService } from './user-action-log.service';
 import { UserActionLogSchema } from './entities/user-action-log.schema';
@@ -34,7 +34,7 @@ import { TokenModule } from 'src/token/token.module';
     CreatorModule,
   ],
   controllers: [UserController],
-  providers: [UserService, AgoraService, UserActionLogService],
+  providers: [UserService, UserActionLogService],
   exports: [UserService, UserActionLogService],
 })
 export class UserModule {}

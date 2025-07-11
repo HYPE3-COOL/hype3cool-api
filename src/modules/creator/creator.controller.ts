@@ -23,11 +23,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { CreatorService } from './creator.service';
 import { Public, SetResponse } from '@/common/decorators';
 
 import { ResponseInterceptor } from '@/common/interceptors/response.interceptor';
-import { AgentService } from '@/modules/agent/agent.service';
+import { CreatorService } from '@/creator/creator.service';
+import { AgentService } from '@/agent/agent.service';
+
 
 @Controller('creator')
 @ApiTags('Creator')

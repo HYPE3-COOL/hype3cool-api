@@ -1,0 +1,44 @@
+import { Type } from 'class-transformer';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, SchemaTypes } from 'mongoose';
+import MongooseUniqueValidator from 'mongoose-unique-validator';
+import { Token } from './token.schema';
+
+export type TransactionDocument = HydratedDocument<Transaction>;
+
+@Schema({
+  timestamps: false,
+})
+export class Transaction {
+  // @Prop({ type: SchemaTypes.ObjectId, ref: 'Token' })
+  // @Type(() => Token)
+  // token: Token;
+
+  @Prop({ required: true, unique: true })
+  signature: string;
+
+  @Prop({ required: true })
+  slot: number;
+
+  @Prop()
+  err: string;
+
+  @Prop()
+  memo: string;
+
+  @Prop({ required: true })
+  blockTime: number;
+
+  @Prop({ required: true })
+  confirmationStatus: string;
+
+  @Prop({ type: SchemaTypes.Mixed })
+  txData: any;
+
+}
+
+// https://www.npmjs.com/package/mongoose-unique-validator, custom error message
+export const TransactionSchema = SchemaFactory.createForClass(
+  Transaction,
+).plugin(MongooseUniqueValidator, { message: '{PATH} is already registered!' });

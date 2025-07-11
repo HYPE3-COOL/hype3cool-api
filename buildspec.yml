@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install -g pnpm
+      - npm install -g typescript
+      - npm install -g @nestjs/cli
+
+  pre_build:
+    commands:
+      - echo "Clearing previous builds and cache..."
+      - rm -rf dist
+      - rm -rf node_modules
+      - pnpm install
+  build:
+    commands:
+      - pnpm run clean
+      - pnpm run build
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
